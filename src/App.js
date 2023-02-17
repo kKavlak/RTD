@@ -1,4 +1,5 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState, useRef} from 'react';
+import { useKeys } from './useKeys';
 import './App.css';
 
 function App() {
@@ -13,37 +14,43 @@ function App() {
     }
   },[]);
 
-  function addAThing(){
-    
-    const thing = {
-      value: newThing,
-      id:things.length + 1
-    };
-
-    setThings([...things,thing]);
-    localStorage.setItem('stuff',JSON.stringify([...things,thing]))
-    setNewThing('');
+  const addAThing = () => {
+    if(newThing !== ''){
+      const thing = {
+        value: newThing,
+        id:things.length + 1
+      };
+      setThings(oldList => [...oldList,thing]);
+      localStorage.setItem('stuff',JSON.stringify([...things,thing]));
+      setNewThing("");
+      ref.current.value = '';
+    }
   }
-  
+
   function deleteThing(id){
     const newArray = things.filter(thing => thing.id !== id);
     setThings(newArray);
     localStorage.setItem('stuff',JSON.stringify(newArray));
   }
 
+  useKeys(addAThing,'Enter');
+
+  const ref = useRef(null);
+
   return (
     <div className="App">
       <h1>To-Do List</h1>
       <p>by Kayra</p>
       
-      <input 
+      <input id='inputText'
           type="text" 
+          ref={ref}
           placeholder='Type a thing to do...'
           onChange={e => setNewThing(e.target.value)} />
       
-      <button id='adder' onClick={() => addAThing()}>Add</button>
+      <button id='adder' onClick={addAThing}>Add</button>
 
-      <table>
+      <div id='holder'>
       <ul>
         {things.map(thing =>{
           return(
@@ -53,7 +60,7 @@ function App() {
             </li> )
         })}
       </ul>
-      </table>
+      </div>
 
     </div>
   );
