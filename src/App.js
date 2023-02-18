@@ -1,4 +1,5 @@
 import React, {useEffect, useState, useRef} from 'react';
+import moment from 'moment/moment';
 import { useKeys } from './useKeys';
 import './App.css';
 
@@ -18,7 +19,8 @@ function App() {
     if(newThing !== ''){
       const thing = {
         value: newThing,
-        id:things.length + 1
+        id:things.length + 1,
+        atTime: moment().format('MMMM do, yyyy H:mma')
       };
       setThings(oldList => [...oldList,thing]);
       localStorage.setItem('stuff',JSON.stringify([...things,thing]));
@@ -40,7 +42,7 @@ function App() {
   return (
     <div className="App">
       <h1>To-Do List</h1>
-      <p>by Kayra</p>
+      <p id='signature'>by Kayra</p>
       
       <input id='inputText'
           type="text" 
@@ -55,8 +57,8 @@ function App() {
         {things.map(thing =>{
           return(
             <li key={thing.id}>
-              {thing.value}
-              <button onClick={() => deleteThing(thing.id)}>X</button>
+              {thing.value} <br /><span id='whatTime'> Started at {thing.atTime}</span> 
+              <button onClick={() => deleteThing(thing.id)}>&#9989;</button>
             </li> )
         })}
       </ul>
