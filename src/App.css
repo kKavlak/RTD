@@ -17,7 +17,7 @@ input{
   border-radius: 5px;
   margin-right: 10px;
   background-color: gainsboro;
-  color: rgb(34, 42, 96);
+  color: black;
 
 }
 table{
@@ -53,4 +53,13 @@ button{
 }
 span span{
   font-weight: bold;
+}
+h2{
+  font-style: italic;
+}
+.backNforth{
+  background-color: rgba(0,0,0,0);
+  border: solid 1px rgba(0,0,0,0);
+  color: white;
+  text-decoration: underline;
 }
