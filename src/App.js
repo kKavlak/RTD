@@ -2,26 +2,23 @@ import React, {useEffect, useState, useRef} from 'react';
 import moment from 'moment/moment';
 import { useKeys } from './useKeys';
 import './App.css';
+import Head from './Head';
 
 function App() {
   
+  const stuff = localStorage.getItem('stuff');
+  const ended = localStorage.getItem('ended')
+
+  const stored = JSON.parse(stuff);
+  const previous = JSON.parse(ended);
+
+
   const[newThing, setNewThing] = useState("");
-  const[things, setThings] = useState([]);
-  const[completed, setCompleted] = useState([]);
+  const[things, setThings] = useState(stuff === "" ? [] : stored);
+  const[completed, setCompleted] = useState(ended === "" ? [] : previous);
   const[flag, setFlag] = useState(0);
   
   
-  useEffect(()=>{
-    if(localStorage.getItem('stuff')){
-      const stored = JSON.parse(localStorage.getItem('stuff'));
-      setThings(stored);
-    }
-    if(localStorage.getItem('ended')){
-      const previous = JSON.parse(localStorage.getItem('ended'));
-      setCompleted(previous);
-    }
-  },[]);
-
   const addAThing = () => {
     if(newThing !== ''){
       const thing = {
@@ -52,11 +49,9 @@ function App() {
     localStorage.setItem('stuff',JSON.stringify(newArray));
   }
 
-  function switchDisplay(){
-    setFlag(1);
-  }
-  function unSwitchDisplay(){
-    setFlag(0);
+  function clearBin(){
+    localStorage.setItem('ended',JSON.stringify([]));
+    setCompleted([]);
   }
 
   useKeys(addAThing,'Enter');
@@ -66,27 +61,29 @@ function App() {
   if(flag == 0){
   return (
     <div className="App">
-      <h1>To-Do List</h1>
-      <p id='signature'>by Kayra</p>
-  
+      <Head/>
       <input id='inputText'
           type="text" 
           ref={ref}
           placeholder='Type a thing to do...'
           onChange={e => setNewThing(e.target.value)} />
       <button id='adder' onClick={addAThing}>Add</button>
-      <p><button className='backNforth' onClick={switchDisplay}>See completed tasks</button></p>
+      <p><button className='backNforth' onClick={() => setFlag(1)}>See completed tasks</button></p>
       
       <div id='holder'>
       <h2>Pending Tasks</h2>
       <ul>
-        {things.map(thing =>{
+        {
+        things.length > 0 ?
+        things.map(thing =>{
           return(
             <li key={thing.id}>
               {thing.value} <br /><span id='whatTime'> Started at {thing.atTime}</span> 
               <button onClick={() => thingComplete(thing.id)}>&#9989;</button>
             </li> )
-        })}
+        })
+        : "No pending tasks"
+        }
       </ul>
       </div>
 
@@ -96,8 +93,7 @@ function App() {
 else{
   return(
     <div className="App">
-      <h1>To-Do List</h1>
-      <p id='signature'>by Kayra</p>
+      <Head/>
       <h2>Completed Tasks</h2>
       <div id='holder'>
         This is where tasks go when " &#9989; " is clicked 
@@ -108,10 +104,13 @@ else{
             <br /> <span id='whatTime'>Completed at {completee.endTime}</span>
           </li> )})
           }
-          
         </ul>
       </div>
-      <button className='backNforth' onClick={unSwitchDisplay}>Back to Main</button>
+      {completed.length > 0 ?
+       <button className='backNforth' onClick={clearBin}>Clear Completed Tasks</button> :
+       "No completed tasks"}
+      <br></br> <br></br>
+      <button className='backNforth' onClick={() => setFlag(0)}>Back to Main</button>
     </div>
   );
 }
