@@ -14,8 +14,8 @@ function App() {
 
 
   const[newThing, setNewThing] = useState("");
-  const[things, setThings] = useState(stuff === "" ? [] : stored);
-  const[completed, setCompleted] = useState(ended === "" ? [] : previous);
+  const[things, setThings] = useState(stuff == "" ? [] : stored);
+  const[completed, setCompleted] = useState(ended == "" ? [] : previous);
   const[flag, setFlag] = useState(0);
   
   
