@@ -6,18 +6,22 @@ import Head from './Head';
 
 function App() {
   
-  const stuff = localStorage.getItem('stuff');
-  const ended = localStorage.getItem('ended')
-
-  const stored = JSON.parse(stuff);
-  const previous = JSON.parse(ended);
-
-
   const[newThing, setNewThing] = useState("");
-  const[things, setThings] = useState(stuff === "" ? [] : stored);
-  const[completed, setCompleted] = useState(ended === "" ? [] : previous);
+  const[things, setThings] = useState([]);
+  const[completed, setCompleted] = useState([]);
   const[flag, setFlag] = useState(0);
   
+  
+  useEffect(()=>{
+    if(localStorage.getItem('stuff')){
+      const stored = JSON.parse(localStorage.getItem('stuff'));
+      setThings(stored);
+    }
+    if(localStorage.getItem('ended')){
+      const previous = JSON.parse(localStorage.getItem('ended'));
+      setCompleted(previous);
+    }
+  },[]);
   
   const addAThing = () => {
     if(newThing !== ''){
